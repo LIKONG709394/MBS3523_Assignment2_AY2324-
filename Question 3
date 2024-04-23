@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-confThreshold = 0.5
+confThreshold = 0.8
 cam = cv2.VideoCapture(0)
 cam.set(3, 1280)
 cam.set(4, 720)
@@ -12,7 +12,6 @@ net = cv2.dnn.readNetFromDarknet('yolov3 (1).cfg', 'yolov3.weights')
 net.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
 net.setPreferableTarget(cv2.dnn.DNN_TARGET_CPU)
 fruit_prices = {'apple': 1, 'banana': 2, 'orange': 3}
-
 while True:
     success, img = cam.read()
     height, width, ch = img.shape
@@ -41,10 +40,10 @@ while True:
                     fruit_counter[label] += 1
                     total_price += fruit_prices[label]
                     cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
-                    cv2.putText(img, f'{label} {confidence:.2f}', (x, y + 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(255, 255, 255), 2)
-        for i, (fruit, count) in enumerate(fruit_counter.items()):
-            cv2.putText(img, f'{fruit}: {count}', (width - 200, 30 + i * 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255),2)
-            cv2.putText(img, f'Total price: {total_price}', (width - 220, 30 + len(fruit_counter) * 30),cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+                    cv2.putText(img, f'{label} {confidence:.2f}', (x, y + 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
+    for i, (fruit, count) in enumerate(fruit_counter.items()):
+        cv2.putText(img, f'{fruit}: {count}', (width - 200, 30 + i * 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+    cv2.putText(img, f'Total price: {total_price}', (width - 220, 30 + len(fruit_counter) * 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
     cv2.imshow('Image', img)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
